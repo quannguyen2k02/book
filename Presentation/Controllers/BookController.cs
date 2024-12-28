@@ -1,9 +1,11 @@
 ﻿using Application.IService;
+using Domain.Entities;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
-
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class BookController : ControllerBase
@@ -20,7 +22,8 @@ public class BookController : ControllerBase
     /// <param name="bookDTO"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> AddBook(BookDTO bookDTO)
+    [Authorize(Roles =UserRoles.Admin)]
+    public async Task<IActionResult> AddBook([FromForm] BookDTO bookDTO)
     {
         if (ModelState.IsValid)
         {
@@ -38,6 +41,7 @@ public class BookController : ControllerBase
         return BadRequest(ModelState);
     }
     [HttpGet]
+    
     public async Task<IActionResult> GetBooks()
     {
         var result = await _bookService.GetBooksAsync();
@@ -58,7 +62,7 @@ public class BookController : ControllerBase
         }
     }
     [HttpPut]
-    public async Task<IActionResult> UpdateBook(BookDTO bookDTO)
+    public async Task<IActionResult> UpdateBook([FromForm]BookDTO bookDTO)
     {
         try
         {

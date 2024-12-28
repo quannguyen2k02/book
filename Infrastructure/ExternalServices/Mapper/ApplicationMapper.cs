@@ -8,22 +8,12 @@ public class ApplicationMapper:Profile
 {
     public ApplicationMapper() 
     {
-        CreateMap<Book, BookDTO>();
-        CreateMap<Author, AuthorDTO>();
-        CreateMap<BookCategory, BookCategoryDTO>();
-        CreateMap<Category, CategoryDTO>();
-        CreateMap<Customer, CustomerDTO>();
-        CreateMap<Order, OrderDTO>();
-        CreateMap<OrderDetail, OrderDetailDTO>();
-
-        //reverse mapper
-
-        CreateMap<BookDTO, Book>();
-        CreateMap<AuthorDTO, Author>();
-        CreateMap<BookCategoryDTO, BookCategory>();
-        CreateMap<CategoryDTO, Category>();
-        CreateMap<CustomerDTO, Customer>();
-        CreateMap<OrderDTO, Order>();
-        CreateMap<OrderDetailDTO, OrderDetail>();
+        CreateMap<Book, BookDTO>().ReverseMap();
+        CreateMap<Author, AuthorDTO>().ReverseMap();
+        CreateMap<BookCategory, BookCategoryDTO>().ReverseMap();
+        CreateMap<Category, CategoryDTO>().ReverseMap();
+        CreateMap<User, UserDTO>().ReverseMap();
+        CreateMap<Order, OrderDTO>().ReverseMap();
+        CreateMap<OrderDetail, OrderDetailDTO>().ReverseMap();
     }
 }

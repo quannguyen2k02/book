@@ -1,5 +1,6 @@
 ﻿
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
 
 namespace Domain.Models;
 
@@ -12,7 +13,8 @@ public class BookDTO
     public decimal Price { get; set; }
     public decimal PriceSale { get; set; }
     public int Stock { get; set; }
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
+    public IFormFile? CoverImage { get; set; }
     public DateTime PublishedDate { get; set; }
     [JsonIgnore]
     public ICollection<BookCategoryDTO>? BookCategories { get; set; }

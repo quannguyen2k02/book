@@ -11,6 +11,9 @@ public static class DependencyInjection
         // Đăng ký các dịch vụ Application Layer
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IAuthorService, AuthorService>();
+        services.AddScoped<IFileService, FileService>();
+        services.AddScoped<IAuthService, AuthService>();
+
         return services;
     }
 }
