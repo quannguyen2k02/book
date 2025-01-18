@@ -85,7 +85,34 @@ public class AuthenticateController : ControllerBase
             return BadRequest(ex.Message);
         }
 
+    }
+    [HttpPost("revoke/{username}")]
+    [Authorize(Roles =UserRoles.Admin)]
+    public async Task<IActionResult> Revoke(string username)
+    {
+        try
+        {
+            await _authService.Revoke(username);
+            return NoContent();
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
-
+    [HttpPost("revoke-all")]
+    [Authorize(Roles = UserRoles.Admin)]
+    public async Task<IActionResult> RevokeAll()
+    {
+        try
+        {
+            await _authService.RevokeAll();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

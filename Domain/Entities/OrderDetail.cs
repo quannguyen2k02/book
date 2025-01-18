@@ -10,6 +10,6 @@ public class OrderDetail:CommonAbstract
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public decimal TotalPrice => Quantity * UnitPrice;
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
 }

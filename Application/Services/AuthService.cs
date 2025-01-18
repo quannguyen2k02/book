@@ -184,4 +184,22 @@ public class AuthService : IAuthService
             refreshToken = newRefreshToken
         };
     }
+
+    public async Task Revoke(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) throw new Exception("user not found");
+        user.RefreshToken = null;
+        await _userManager.UpdateAsync(user);
+    }
+
+    public async Task RevokeAll()
+    {
+        var users = _userManager.Users.ToList();
+        foreach(var user in users)
+        {
+            user.RefreshToken = null;
+            await _userManager.UpdateAsync(user);
+        }
+    }
 }

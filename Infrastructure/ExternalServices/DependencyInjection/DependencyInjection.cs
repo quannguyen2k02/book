@@ -20,7 +20,9 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, Infrastructure.UnitOfWork.UnitOfWork>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
-
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
         //Đăng kí extension
         services.AddAutoMapper(typeof(ApplicationMapper));
 

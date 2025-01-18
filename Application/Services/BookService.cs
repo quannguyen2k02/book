@@ -26,13 +26,24 @@ public class BookService : IBookService
             var book = _mapper.Map<Book>(bookDTO);
             var author = await _unitOfWork.Authors.GetByIdAsync(book.AuthorId);//get author
             if (author == null) throw new KeyNotFoundException($"Author with id: {book.AuthorId} not found!");
-            var uploadPath = "StaticFiles/Book";
-            var fileName = await _fileService.UploadFileAsync(bookDTO.CoverImage, uploadPath);
-            book.ImageUrl = Path.Combine("static\\Book", fileName).Replace("\\", "/"); ;
+            var category = await _unitOfWork.Categories.GetByIdAsync(bookDTO.CategoryId);
+            if (category == null) throw new KeyNotFoundException($"Category with id: {bookDTO.CategoryId} not found!");
+            
             book.Id = 0;
-            var result = await _unitOfWork.Books.AddAsync(book);
+            var addedBook = await _unitOfWork.Books.AddAsync(book);
+
+                var uploadPath = "StaticFiles/Book";
+                var fileName = await _fileService.UploadFileAsync(bookDTO.CoverImage, uploadPath);
+                book.ImageUrl = Path.Combine("static\\Book", fileName).Replace("\\", "/"); ;
             await _unitOfWork.Complete();
-            return _mapper.Map<BookDTO>(result);
+            var bookCategory = new BookCategory
+            {
+                CategoryId = bookDTO.CategoryId,
+                BookId = addedBook.Id
+            };
+            var result2 = await _unitOfWork.BookCategories.AddAsync(bookCategory);
+            await _unitOfWork.Complete();
+            return _mapper.Map<BookDTO>(addedBook);
         }
         catch (Exception ex)
         {
@@ -60,6 +71,25 @@ public class BookService : IBookService
     {
         var books = await _unitOfWork.Books.GetAllAsync();
         return _mapper.Map<List<BookDTO>>(books);
+    }
+
+    public async Task<List<BookDTO>> GetBooksByCategory(int categoryId)
+    {
+
+        var books = await _unitOfWork.Books.GetBooksByCategory(categoryId);
+        return _mapper.Map<List<BookDTO>>(books);
+    }
+
+    public async Task<(List<BookDTO> books, int totalCount, int totalPages)> GetBooksPaged(int pageNumber, int pageSize, string? text)
+    {
+
+        var result = await _unitOfWork.Books.GetPagedAsync(
+            pageNumber,
+            pageSize,
+            string.IsNullOrEmpty(text) ? null : x => x.Title.ToLower().Contains(text.ToLower()));
+        var pagedItem = result.Items;
+        var lists = _mapper.Map<List<BookDTO>>(pagedItem);
+        return (lists, result.TotalCount, result.totalPages);
     }
 
     public async Task<BookDTO> UpdateBook(BookDTO bookDTO)
@@ -92,4 +122,6 @@ public class BookService : IBookService
         }
         
     }
+
+    
 }

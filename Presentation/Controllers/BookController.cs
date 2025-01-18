@@ -1,11 +1,11 @@
-﻿using Application.IService;
+﻿using System.Linq.Expressions;
+using Application.IService;
 using Domain.Entities;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class BookController : ControllerBase
@@ -22,7 +22,6 @@ public class BookController : ControllerBase
     /// <param name="bookDTO"></param>
     /// <returns></returns>
     [HttpPost]
-    [Authorize(Roles =UserRoles.Admin)]
     public async Task<IActionResult> AddBook([FromForm] BookDTO bookDTO)
     {
         if (ModelState.IsValid)
@@ -41,7 +40,7 @@ public class BookController : ControllerBase
         return BadRequest(ModelState);
     }
     [HttpGet]
-    
+
     public async Task<IActionResult> GetBooks()
     {
         var result = await _bookService.GetBooksAsync();
@@ -62,7 +61,7 @@ public class BookController : ControllerBase
         }
     }
     [HttpPut]
-    public async Task<IActionResult> UpdateBook([FromForm]BookDTO bookDTO)
+    public async Task<IActionResult> UpdateBook([FromForm] BookDTO bookDTO)
     {
         try
         {
@@ -72,6 +71,32 @@ public class BookController : ControllerBase
         catch (Exception ex)
         {
             return BadRequest($"{ex.Message}");
+        }
+    }
+    [HttpGet("GetBooksPaged")]
+    public async Task<IActionResult> GetBooksPaged(int pageSize, int pageNumber, string? text)
+    {
+
+        var result = await _bookService.GetBooksPaged(pageNumber, pageSize, text);
+        var a = new
+        {
+            books = result.books,
+            totalPages = result.totalPages,
+            currentPage = pageNumber
+        };
+        return Ok(a);
+    }
+    [HttpGet("GetBooksByCategory")]
+    public async Task<IActionResult> GetBooksByCategory(int categoryId)
+    {
+        try
+        {
+            var result = await _bookService.GetBooksByCategory(categoryId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);  
         }
     }
 }

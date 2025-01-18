@@ -34,6 +34,22 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _context.Set<T>().FindAsync(id);
     }
 
+    public async Task<(List<T> Items, int TotalCount, int totalPages)> GetPagedAsync(int pageNumber, int pageSize, Expression<Func<T, bool>>? predicate = null)
+    {
+        var query = _context.Set<T>().AsQueryable();
+        if(predicate != null)
+        {
+            query = query.Where(predicate);
+        }
+        int totalCount = await query.CountAsync();
+        List<T> items = await query
+            .Skip((pageNumber-1)*pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+        var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+        return (items, totalCount, totalPages);
+    }
+
     public async Task<T> Update(T entity)
     {
         _context.Set<T>().Update(entity);

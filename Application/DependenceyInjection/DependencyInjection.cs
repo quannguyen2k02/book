@@ -1,4 +1,5 @@
-﻿using Application.IService;
+﻿using Application.IRepository;
+using Application.IService;
 using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,8 @@ public static class DependencyInjection
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IAuthService, AuthService>();
-
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<ICategoryService, CategoryService>();
         return services;
     }
 }
